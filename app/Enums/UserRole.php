@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-enum UserRole: int
+enum UserRole: string
 {
-    case USER = 0;
-    case ADMIN = 1;
+    case USER = '0';
+    case ADMIN = '1';
 
     public function label(): string
     {
