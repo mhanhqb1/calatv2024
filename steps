@@ -1,0 +1,117 @@
+1. Thiết lập dự án
+1.1. Tạo dự án Laravel
+
+Cài đặt Laravel bằng Composer.
+Cấu hình môi trường (.env) với thông tin database và các thiết lập cơ bản.
+1.2. Thiết lập Authentication
+
+Cài đặt Laravel Breeze hoặc Laravel UI để tạo hệ thống đăng nhập/đăng ký.
+Tạo middleware để phân quyền truy cập cho từng loại tài khoản.
+1.3. Thiết kế cơ sở dữ liệu
+
+Xác định và tạo các bảng chính như Products, Orders, Customers, Employees, Inventory.
+Tạo các migration và chạy lệnh migrate để tạo bảng trong database.
+Xây dựng các mối quan hệ giữa các bảng.
+2. Xây dựng chức năng quản lý sản phẩm
+2.1. Xây dựng CRUD cho sản phẩm
+
+Tạo ProductController.
+Tạo route cho các chức năng thêm, sửa, xóa, xem danh sách sản phẩm.
+Thiết kế form để chủ shop thêm thông tin sản phẩm: tên, giá, hình ảnh, danh mục.
+2.2. Quản lý hình ảnh sản phẩm
+
+Cấu hình lưu trữ hình ảnh, sử dụng Storage của Laravel để lưu trữ ảnh sản phẩm.
+Thêm chức năng tải lên, chỉnh sửa, và xóa hình ảnh sản phẩm.
+2.3. Quản lý tồn kho
+
+Tạo bảng Inventory và tích hợp vào ProductController.
+Xây dựng chức năng cập nhật tồn kho tự động khi có đơn hàng.
+3. Xây dựng chức năng quản lý đơn hàng
+3.1. Tạo đơn hàng
+
+Tạo OrderController và các route để tạo, chỉnh sửa, xóa đơn hàng.
+Xây dựng giao diện thêm sản phẩm vào giỏ hàng và tính tổng tiền.
+3.2. Quản lý giỏ hàng tạm thời
+
+Tạo bảng Cart để lưu tạm các sản phẩm khi khách hàng đang chọn mua.
+Xây dựng chức năng thêm, xóa, và cập nhật số lượng sản phẩm trong giỏ hàng.
+3.3. Tích hợp thanh toán
+
+Tạo các tùy chọn thanh toán: tiền mặt, chuyển khoản, hoặc thẻ.
+Tích hợp các API thanh toán (nếu cần).
+3.4. Hoàn tất đơn hàng và tạo hóa đơn
+
+Tạo giao diện xác nhận đơn hàng và tính toán chi phí cuối cùng.
+Kết nối với máy in (nếu có) để in hóa đơn.
+4. Xây dựng chức năng quản lý khách hàng
+4.1. Quản lý thông tin khách hàng
+
+Tạo CustomerController.
+Xây dựng chức năng thêm, chỉnh sửa, và xóa thông tin khách hàng.
+4.2. Tạo chương trình khách hàng thân thiết
+
+Xây dựng hệ thống tích điểm dựa trên giá trị đơn hàng hoặc số lần mua hàng.
+4.3. Lịch sử giao dịch khách hàng
+
+Tạo bảng CustomerTransactions để lưu lịch sử mua hàng của khách hàng.
+Thiết kế giao diện để truy xuất lịch sử mua hàng của mỗi khách.
+5. Xây dựng chức năng quản lý nhân viên
+5.1. Tạo tài khoản nhân viên
+
+Tạo bảng Employees để lưu thông tin nhân viên.
+Xây dựng giao diện và các route để thêm, sửa, xóa nhân viên.
+5.2. Phân quyền
+
+Thiết lập middleware để quản lý quyền truy cập cho từng tài khoản nhân viên.
+5.3. Theo dõi hoạt động của nhân viên
+
+Tạo bảng EmployeeActivities để ghi nhận các hoạt động quan trọng (tạo đơn hàng, thanh toán).
+6. In hóa đơn và biên lai
+6.1. Tạo mẫu hóa đơn
+Thiết kế mẫu hóa đơn bằng HTML/CSS, tích hợp thông tin sản phẩm, giá, và thông tin khách hàng.
+6.2. Tích hợp máy in hóa đơn
+Cấu hình kết nối với máy in để in hóa đơn trực tiếp từ giao diện.
+6.3. Gửi hóa đơn qua email
+Cấu hình mail server trong Laravel và tạo chức năng gửi hóa đơn PDF qua email.
+7. Phân tích và báo cáo
+7.1. Báo cáo doanh thu
+
+Tạo bảng SalesReports để lưu thông tin doanh thu.
+Xây dựng giao diện thống kê doanh thu theo ngày, tháng, và năm.
+7.2. Báo cáo sản phẩm bán chạy
+
+Tạo chức năng xác định sản phẩm bán chạy dựa trên số lượng bán ra.
+Thiết kế biểu đồ hiển thị các sản phẩm bán chạy.
+7.3. Báo cáo tồn kho
+
+Xây dựng chức năng hiển thị tình trạng tồn kho để chủ shop biết sản phẩm nào cần nhập thêm.
+8. Bảo mật và sao lưu dữ liệu
+8.1. Xác thực và phân quyền
+
+Sử dụng Laravel Passport hoặc Sanctum để tăng cường bảo mật xác thực.
+Thêm xác thực hai lớp (2FA) cho tài khoản nhân viên quan trọng.
+8.2. Sao lưu dữ liệu
+
+Thiết lập cron job để sao lưu dữ liệu hàng ngày/tuần.
+Sử dụng Storage để lưu trữ các file sao lưu.
+8.3. Mã hóa dữ liệu
+
+Sử dụng phương thức mã hóa của Laravel cho các dữ liệu nhạy cảm, như thông tin thanh toán.
+9. Kiểm thử và triển khai
+9.1. Kiểm thử tính năng
+
+Viết unit test cho các chức năng chính như quản lý sản phẩm, đơn hàng, và thanh toán.
+Kiểm thử bảo mật và phân quyền.
+9.2. Tối ưu hóa và bảo trì
+
+Tối ưu hóa các câu truy vấn và cache dữ liệu để giảm tải cho server.
+9.3. Triển khai lên server
+
+Chọn nền tảng triển khai như AWS, DigitalOcean hoặc Heroku.
+Cài đặt SSL để bảo vệ website khi triển khai chính thức.
+10. Tài liệu hướng dẫn và bàn giao
+10.1. Viết tài liệu hướng dẫn
+Soạn thảo tài liệu chi tiết về cách sử dụng hệ thống cho người dùng.
+10.2. Đào tạo sử dụng
+Tổ chức buổi training cho người dùng nếu cần.
+Với các task chi tiết trên, dự án sẽ được triển khai theo từng giai đoạn, đảm bảo chất lượng và hiệu quả.
