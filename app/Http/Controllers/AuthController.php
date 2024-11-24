@@ -25,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            if (Auth::user()->role === 'admin') {
+            if (Auth::user()->role === UserRole::ADMIN) {
                 return redirect()->route('admin.dashboard');
             } else {
                 Auth::logout();
@@ -51,8 +51,8 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            if (Auth::user()->role === 'user') {
-                return redirect()->route('user.dashboard');
+            if (Auth::user()) {
+                return redirect('/');
             } else {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Access denied. Users only.']);

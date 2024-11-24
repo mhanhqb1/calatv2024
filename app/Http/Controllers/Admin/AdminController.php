@@ -8,6 +8,6 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        return view('welcome'); // Trang quản lý dành riêng cho admin
+        return view('admin.dashboard');
     }
 }
