@@ -14,7 +14,7 @@ class PlaceController extends Controller
     // Hiển thị danh sách địa điểm
     public function index()
     {
-        $places = Place::with('categories', 'images')->paginate(2);
+        $places = Place::with('categories', 'images')->paginate(ConstantCommon::PAGE_LIMIT);
         return view('admin.places.index', compact('places'));
     }
 
