@@ -50,6 +50,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{id}/edit', [PlaceController::class, 'edit'])->name('edit'); // Sửa địa điểm
             Route::put('/{id}', [PlaceController::class, 'update'])->name('update'); // Cập nhật địa điểm
             Route::delete('/{id}', [PlaceController::class, 'destroy'])->name('destroy'); // Xóa địa điểm
+            Route::delete('/images/{id}', [PlaceController::class, 'deleteImage'])->name('image.delete');
         });
     });
 });

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\ConstantCommon;
 use App\Http\Controllers\Controller;
 use App\Models\Place;
 use App\Models\Category;
+use App\Models\PlaceImage;
 use Illuminate\Http\Request;
 
 class PlaceController extends Controller
@@ -12,7 +14,7 @@ class PlaceController extends Controller
     // Hiển thị danh sách địa điểm
     public function index()
     {
-        $places = Place::with('categories', 'images')->paginate(10);
+        $places = Place::with('categories', 'images')->paginate(2);
         return view('admin.places.index', compact('places'));
     }
 
@@ -31,7 +33,7 @@ class PlaceController extends Controller
             'description' => 'nullable|string',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'primary_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'images.*' => 'nullable|image|mimes:'.ConstantCommon::IMAGE_TYPES.'|max:'.ConstantCommon::IMAGE_LENGTH,
         ]);
 
         $place = Place::create([
@@ -43,9 +45,12 @@ class PlaceController extends Controller
         $place->categories()->sync($request->categories);
 
         // Xử lý hình ảnh chính
-        if ($request->hasFile('primary_image')) {
-            $imagePath = $request->file('primary_image')->store('places', 'public');
-            $place->images()->create(['path' => $imagePath, 'is_primary' => true]);
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $k => $image) {
+                $imagePath = $image->store(ConstantCommon::PLACE_IMAGE_PATH, 'public');
+                $isPrimary = empty($k) ? 1 : 0;
+                $place->images()->create(['url' => $imagePath, 'is_primary' => $isPrimary]);
+            }
         }
 
         return redirect()->route('admin.places.index')->with('success', 'Place created successfully.');
@@ -67,7 +72,7 @@ class PlaceController extends Controller
             'description' => 'nullable|string',
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
-            'primary_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'images.*' => 'nullable|image|mimes:'.ConstantCommon::IMAGE_TYPES.'|max:'.ConstantCommon::IMAGE_LENGTH,
         ]);
 
         $place = Place::findOrFail($id);
@@ -78,11 +83,19 @@ class PlaceController extends Controller
 
         $place->categories()->sync($request->categories);
 
-        // Xử lý hình ảnh chính nếu có
-        if ($request->hasFile('primary_image')) {
-            $imagePath = $request->file('primary_image')->store('places', 'public');
-            $place->images()->update(['is_primary' => false]); // Xóa trạng thái "primary" cũ
-            $place->images()->create(['path' => $imagePath, 'is_primary' => true]);
+        if ($request->has('primary_image')) {
+            $place->images()->update(['is_primary' => false]); // Đặt tất cả hình ảnh không phải chính
+            $primaryImage = $place->images()->find($request->primary_image);
+            if ($primaryImage) {
+                $primaryImage->update(['is_primary' => true]);
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store(ConstantCommon::PLACE_IMAGE_PATH, 'public');
+                $place->images()->create(['url' => $imagePath, 'is_primary' => false]);
+            }
         }
 
         return redirect()->route('admin.places.index')->with('success', 'Place updated successfully.');
@@ -95,5 +108,15 @@ class PlaceController extends Controller
         $place->delete();
 
         return redirect()->route('admin.places.index')->with('success', 'Place deleted successfully.');
+    }
+
+    public function deleteImage($id)
+    {
+        $image = PlaceImage::findOrFail($id);
+        if (file_exists(storage_path('app/public/' . $image->url))) {
+            unlink(storage_path('app/public/' . $image->url));
+        }
+        $image->delete();
+        return back()->with('success', 'Image deleted successfully.');
     }
 }

@@ -15,9 +15,9 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Image</th>
                 <th>Name</th>
                 <th>Categories</th>
-                <th>Primary Image</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -25,15 +25,15 @@
             @forelse($places as $place)
                 <tr>
                     <td>{{ $place->id }}</td>
-                    <td>{{ $place->name }}</td>
-                    <td>{{ $place->categories->pluck('name')->join(', ') }}</td>
                     <td>
                         @if($place->images->where('is_primary', true)->first())
-                            <img src="{{ asset('storage/' . $place->images->where('is_primary', true)->first()->path) }}" alt="Primary Image" width="50">
+                            <img src="{{ asset('storage/' . $place->images->where('is_primary', true)->first()->url) }}" alt="Primary Image" width="50">
                         @else
-                            No Image
+
                         @endif
                     </td>
+                    <td>{{ $place->name }}</td>
+                    <td>{{ $place->categories->pluck('name')->join(', ') }}</td>
                     <td>
                         <a href="{{ route('admin.places.edit', $place->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('admin.places.destroy', $place->id) }}" method="POST" style="display: inline-block;">
@@ -51,6 +51,8 @@
         </tbody>
     </table>
 
-    {{ $places->links() }}
+    <div class="d-flex justify-content-center">
+        {{ $places->links('pagination::bootstrap-4') }}
+    </div>
 </div>
 @endsection
