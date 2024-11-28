@@ -35,7 +35,7 @@
         <!-- Danh mục -->
         <div class="form-group">
             <label for="categories">Categories</label>
-            <select name="categories[]" id="categories" class="form-control" multiple>
+            <select name="categories[]" id="categories" class="form-control select2" multiple>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}"
                         {{ in_array($category->id, $place->categories->pluck('id')->toArray()) ? 'selected' : '' }}>

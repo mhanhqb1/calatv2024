@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Place;
 use App\Models\Category;
 use App\Models\PlaceImage;
+use App\Models\PlaceVideoTag;
 use Illuminate\Http\Request;
 
 class PlaceController extends Controller
@@ -34,6 +35,12 @@ class PlaceController extends Controller
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
             'images.*' => 'nullable|image|mimes:'.ConstantCommon::IMAGE_TYPES.'|max:'.ConstantCommon::IMAGE_LENGTH,
+            'videos' => 'nullable|array',
+            'videos.*.name' => 'nullable|string|max:255',
+            'videos.*.description' => 'nullable|string|max:500',
+            'videos.*.youtube_url' => 'nullable|url',
+            'videos.*.twitter_url' => 'nullable|url',
+            'videos.*.publisher' => 'nullable|string|max:255',
         ]);
 
         $place = Place::create([
@@ -50,6 +57,27 @@ class PlaceController extends Controller
                 $imagePath = $image->store(ConstantCommon::PLACE_IMAGE_PATH, 'public');
                 $isPrimary = empty($k) ? 1 : 0;
                 $place->images()->create(['url' => $imagePath, 'is_primary' => $isPrimary]);
+            }
+        }
+
+        // Trong phương thức store và update
+        if ($request->videos) {
+            foreach ($request->videos as $videoData) {
+                $video = $place->videos()->create($videoData);
+
+                // Xử lý tags
+                if (!empty($videoData['tags'])) {
+                    $tagIds = [];
+                    foreach ($videoData['tags'] as $tagName) {
+                        if (!empty($tagName)) {
+                            $tag = PlaceVideoTag::firstOrCreate(['name' => $tagName]);
+                            $tagIds[] = $tag->id;
+                        }
+                    }
+                    if (!empty($tagIds)) {
+                        $video->tags()->sync($tagIds);
+                    }
+                }
             }
         }
 
@@ -118,5 +146,13 @@ class PlaceController extends Controller
         }
         $image->delete();
         return back()->with('success', 'Image deleted successfully.');
+    }
+
+    public function tagSearch(Request $request)
+    {
+        $query = $request->get('q', '');
+        $tags = PlaceVideoTag::where('name', 'LIKE', "%$query%")->get();
+
+        return response()->json($tags);
     }
 }

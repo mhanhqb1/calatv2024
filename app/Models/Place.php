@@ -30,4 +30,9 @@ class Place extends Model
     {
         return $this->hasOne(PlaceImage::class)->where('is_primary', true);
     }
+
+    public function videos()
+    {
+        return $this->hasMany(PlaceVideo::class);
+    }
 }

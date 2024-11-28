@@ -51,6 +51,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/{id}', [PlaceController::class, 'update'])->name('update'); // Cập nhật địa điểm
             Route::delete('/{id}', [PlaceController::class, 'destroy'])->name('destroy'); // Xóa địa điểm
             Route::delete('/images/{id}', [PlaceController::class, 'deleteImage'])->name('image.delete');
+            Route::get('/tags/search', [PlaceController::class, 'tagSearch'])->name('tags.search');
         });
     });
 });
