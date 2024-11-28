@@ -29,9 +29,15 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.places.index') }}" class="nav-link {{ Request::is('admin/places*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.places.index') }}" class="nav-link {{ Request::is('admin/places/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Places</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.place_cates.index') }}" class="nav-link {{ Request::is('admin/place-cates/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>Categories</p>
                     </a>
                 </li>
             </ul>

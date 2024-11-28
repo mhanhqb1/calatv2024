@@ -14,5 +14,9 @@ class CategoryPlace extends Model
         'category_id',
     ];
 
+    public function places()
+    {
+        return $this->belongsToMany(Place::class, 'category_place');
+    }
 
 }

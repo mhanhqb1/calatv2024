@@ -110,6 +110,50 @@
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoModalLabel">Add Video</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="video-form">
+                    <div class="mb-3">
+                        <label for="video-name" class="form-label">Name</label>
+                        <input type="text" id="video-name" class="form-control" placeholder="Enter video name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="video-description" class="form-label">Description</label>
+                        <textarea id="video-description" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="video-youtube" class="form-label">Youtuber URL</label>
+                        <input type="text" id="video-youtube" class="form-control" placeholder="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="video-twitter" class="form-label">Twitter URL</label>
+                        <input type="url" id="video-twitter" class="form-control" placeholder="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="video-tags" class="form-label">Tags</label>
+                        <select id="video-tags" class="form-control" multiple="multiple"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="video-publisher" class="form-label">Publisher</label>
+                        <input type="text" id="video-publisher" class="form-control" placeholder="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="add-video-btn" class="btn btn-primary">Add Video</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PlaceCateController;
 use App\Http\Controllers\Admin\PlaceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -52,6 +53,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', [PlaceController::class, 'destroy'])->name('destroy'); // Xóa địa điểm
             Route::delete('/images/{id}', [PlaceController::class, 'deleteImage'])->name('image.delete');
             Route::get('/tags/search', [PlaceController::class, 'tagSearch'])->name('tags.search');
+        });
+        Route::prefix('place-cates')->name('place_cates.')->group(function () {
+            Route::get('/', [PlaceCateController::class, 'index'])->name('index');
+            Route::get('/create', [PlaceCateController::class, 'create'])->name('create');
+            Route::post('/', [PlaceCateController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [PlaceCateController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [PlaceCateController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PlaceCateController::class, 'destroy'])->name('destroy');
         });
     });
 });
