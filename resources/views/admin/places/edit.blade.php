@@ -70,6 +70,42 @@
             <div id="preview-container" class="mt-3"></div>
         </div>
 
+        <div class="form-group">
+            <label>Videos</label>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#videoModal">
+                Add Video
+            </button>
+        </div>
+
+        <!-- Danh sách video -->
+        <div id="video-list">
+            @if(isset($place))
+                @foreach($place->videos as $video)
+                    <?php
+                    $_tags = [];
+                    foreach ($video->tags as $tag) {
+                        $_tags[] = $tag->name;
+                    }
+                    ?>
+                    <div class="video-item mb-2">
+                        <input type="hidden" name="videos[{{ $loop->index }}][name]" value="{{ $video->name }}">
+                        <input type="hidden" name="videos[{{ $loop->index }}][description]" value="{{ $video->description }}">
+                        <input type="hidden" name="videos[{{ $loop->index }}][youtube_url]" value="{{ $video->youtube_url }}">
+                        <input type="hidden" name="videos[{{ $loop->index }}][twitter_url]" value="{{ $video->twitter_url }}">
+                        <input type="hidden" name="videos[{{ $loop->index }}][tags][]" value="{{ implode(',', $_tags) }}">
+                        <input type="hidden" name="videos[{{ $loop->index }}][publisher]" value="{{ $video->publisher }}">
+
+                        <p>
+                            <strong>{{ $video->name }}</strong> ({{ $video->publisher }}) -
+                            <a href="{{ $video->youtube_url }}" target="_blank">Youtube URL</a> -
+                            <a href="{{ $video->twitter_url }}" target="_blank">Twitter URL</a>
+                            <button type="button" class="btn btn-danger btn-sm remove-video-btn">Remove</button>
+                        </p>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+
         <!-- Nút cập nhật -->
         <button type="submit" class="btn btn-success">Update</button>
     </form>
@@ -101,6 +137,71 @@
                     }
                 });
             }
+        });
+    });
+
+    $(document).ready(function () {
+        let videoIndex = 0;
+
+        $('#video-tags').select2({
+            tags: true,
+            tokenSeparators: [','],
+            placeholder: 'Enter or select tags',
+            ajax: {
+                url: '', ////route("admin.tags.search")
+                dataType: 'json',
+                delay: 250,
+                processResults: function (data) {
+                    return {
+                        results: data.map(tag => ({ id: tag.name, text: tag.name }))
+                    };
+                },
+                cache: true
+            }
+        });
+
+        // Xử lý thêm video
+        $('#add-video-btn').on('click', function () {
+            const name = $('#video-name').val();
+            const description = $('#video-description').val();
+            const youtube = $('#video-youtube').val();
+            const twitter = $('#video-twitter').val();
+            const tags = $('#video-tags').val(); // Lấy danh sách tags
+            const publisher = $('#video-publisher').val();
+
+            // if (!name || !type || !url) {
+            //     alert('Please fill in all fields.');
+            //     return;
+            // }
+
+            const videoItem = `
+                <div class="video-item mb-2">
+                    <input type="hidden" name="videos[${videoIndex}][name]" value="${name}">
+                    <input type="hidden" name="videos[${videoIndex}][description]" value="${description}">
+                    <input type="hidden" name="videos[${videoIndex}][youtube_url]" value="${youtube}">
+                    <input type="hidden" name="videos[${videoIndex}][twitter_url]" value="${twitter}">
+                    <input type="hidden" name="videos[${videoIndex}][tags][]" value="${tags.join(',')}">
+                    <input type="hidden" name="videos[${videoIndex}][publisher]" value="${publisher}">
+                    <p>
+                        <strong>${name}</strong> (${publisher}) -
+                        <a href="${youtube}" target="_blank">Youtube Url</a> -
+                        <a href="${twitter}" target="_blank">Twitter Url</a>
+                        <button type="button" class="btn btn-danger btn-sm remove-video-btn">Remove</button>
+                    </p>
+                </div>
+            `;
+
+            $('#video-list').append(videoItem);
+            videoIndex++;
+
+            $('#video-form')[0].reset();
+            $('#video-tags').val(null).trigger('change'); // Reset tags
+            $('#videoModal').modal('hide');
+        });
+
+        // Xử lý xóa video
+        $('#video-list').on('click', '.remove-video-btn', function () {
+            $(this).closest('.video-item').remove();
         });
     });
     function previewImages() {

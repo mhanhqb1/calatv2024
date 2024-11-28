@@ -101,6 +101,12 @@ class PlaceController extends Controller
             'categories' => 'required|array',
             'categories.*' => 'exists:categories,id',
             'images.*' => 'nullable|image|mimes:'.ConstantCommon::IMAGE_TYPES.'|max:'.ConstantCommon::IMAGE_LENGTH,
+            'videos' => 'nullable|array',
+            'videos.*.name' => 'nullable|string|max:255',
+            'videos.*.description' => 'nullable|string|max:500',
+            'videos.*.youtube_url' => 'nullable|url',
+            'videos.*.twitter_url' => 'nullable|url',
+            'videos.*.publisher' => 'nullable|string|max:255',
         ]);
 
         $place = Place::findOrFail($id);
@@ -123,6 +129,26 @@ class PlaceController extends Controller
             foreach ($request->file('images') as $image) {
                 $imagePath = $image->store(ConstantCommon::PLACE_IMAGE_PATH, 'public');
                 $place->images()->create(['url' => $imagePath, 'is_primary' => false]);
+            }
+        }
+
+        if ($request->videos) {
+            foreach ($request->videos as $videoData) {
+                $video = $place->videos()->create($videoData);
+
+                // Xử lý tags
+                if (!empty($videoData['tags'])) {
+                    $tagIds = [];
+                    foreach ($videoData['tags'] as $tagName) {
+                        if (!empty($tagName)) {
+                            $tag = PlaceVideoTag::firstOrCreate(['name' => $tagName]);
+                            $tagIds[] = $tag->id;
+                        }
+                    }
+                    if (!empty($tagIds)) {
+                        $video->tags()->sync($tagIds);
+                    }
+                }
             }
         }
 
